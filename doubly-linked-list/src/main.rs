@@ -91,6 +91,10 @@ trait Iterator {
     fn next(&mut self) -> Option<Self::Item>;
 }
 
+pub trait Drop{
+    fn drop(&mut self);
+}
+
 // Traits Implementation
 impl<T> Iterator for IntoIter<T> {
     type Item = T;
@@ -122,6 +126,14 @@ impl<'a, T> Iterator for IterMut<'a, T> {
     }
 }
 
+impl <T> Drop for List<T>{
+    fn drop(&mut self){
+        let mut current = self.head.take();
+        while  let Some(mut boxed_node) = current {
+            current = boxed_node.next.take();
+        }
+    }
+}
 // Doubly Linked List
 #[derive(Debug)]
 pub struct DoublyLinkedList<T> {
@@ -178,6 +190,7 @@ impl<T> DoublyLinkedList<T> {
     }
 
     pub fn push(&mut self, elem: T, index: i32) {
+        self.check_size(index);
         self.shift(index);
         self.left.push(elem);
         self.size += 1;
@@ -190,6 +203,7 @@ impl<T> DoublyLinkedList<T> {
     }
 
     pub fn pop(&mut self, index: i32) {
+        self.check_size(index);
         self.shift(index);
         self.left.pop();
         self.size = cmp::max(0, self.size - 1);
