@@ -1,6 +1,5 @@
-use std::cmp;
+use std::{cmp, mem};
 use std::fmt::Debug;
-use std::ops::Deref;
 
 // Structures
 #[derive(Debug)]
@@ -237,7 +236,7 @@ impl<T> DoublyLinkedList<T> {
         let mut exp = 2;
         let mut buffer:List<T> = List::new();
         let size = self.size();
-        while ((exp>>1) - 1 < size - 1){
+        while ((exp>>1)  < size ){
             let init = (exp>>1) - 1;
             self.shift(init);
             for idx in init..size {
@@ -298,6 +297,9 @@ impl<T> DoublyLinkedList<T> {
             exp = exp<<1;
         }
     }
+    pub fn reverse(&mut self){
+        mem::swap(&mut self.left,&mut self.right);
+    }
     pub fn print_all(&mut self)
         where T: std::fmt::Debug
     {
@@ -344,6 +346,11 @@ fn main() {
     dl.push_back(771);
     dl.push_back(8881);
     dl.push_back(31);
+    dl.print_all();
+    dl.reverse();
+    dl.print_all();
+    dl.sort();
+    dl.reverse();
     dl.sort();
     dl.print_all();
 
