@@ -4,7 +4,9 @@
 
 use std::{cmp, mem};
 use std::fmt::Debug;
+
 mod list;
+
 use list::List;
 
 // Doubly Linked List
@@ -26,13 +28,13 @@ impl<T> DoublyLinkedList<T> {
         }
     }
 
-    fn check_size(&mut self,index:i32){
-        if(self.size()==0 || self.size()<=index || index<0){
+    fn check_size(&mut self, index: i32) {
+        if (self.size() == 0 || self.size() <= index || index < 0) {
             panic!("Index Out of Bounds!!!");
         }
     }
-    fn check_empty(&mut self){
-        if(self.size()==0){
+    fn check_empty(&mut self) {
+        if (self.size() == 0) {
             panic!("Doubly-Linked-List is Empty!!!");
         }
     }
@@ -121,60 +123,59 @@ impl<T> DoublyLinkedList<T> {
         *self.get_size().unwrap()
     }
 
-    pub fn sort (&mut self)
+    pub fn sort(&mut self)
         where T: std::cmp::PartialEq + std::cmp::PartialOrd + std::fmt::Debug
     {
-        if (self.size() == 0){
+        if (self.size() == 0) {
             return;
         }
         self.shift(0);
         let mut exp = 2;
-        let mut buffer:List<T> = List::new();
+        let mut buffer: List<T> = List::new();
         let size = self.size();
-        while ((exp>>1)  < size ){
-            let init = (exp>>1) - 1;
+        while ((exp >> 1) < size) {
+            let init = (exp >> 1) - 1;
             self.shift(init);
             for idx in init..size {
                 self.shift(idx);
-                if( (idx - init) % exp == 0){
+                if ((idx - init) % exp == 0) {
                     let mut l = self.left.pop();
                     let mut r = self.right.pop();
-                    let mut q = (exp>>1);
-                    while (l>=r  && q>0){
-                        match l.take(){
+                    let mut q = (exp >> 1);
+                    while (l >= r && q > 0) {
+                        match l.take() {
                             Some(value) => {
                                 buffer.push(value);
-                            },
+                            }
                             None => {
                                 break;
                             }
                         }
                         l = self.left.pop();
-                        q-=1;
+                        q -= 1;
                     }
-                    if(l!=None){
-                        l.take().map(|value|{self.left.push(value);});
+                    if (l != None) {
+                        l.take().map(|value| { self.left.push(value); });
                     }
                     let mut b = buffer.pop();
-                    q = (exp>>1);
-                    while(b!=None){
-                        if(q>0 && r!=None && r<b){
-                            match r.take(){
+                    q = (exp >> 1);
+                    while (b != None) {
+                        if (q > 0 && r != None && r < b) {
+                            match r.take() {
                                 Some(value) => {
                                     self.left.push(value);
-                                },
+                                }
                                 None => {
                                     break;
                                 }
                             }
-                            r=self.right.pop();
-                            q-=1;
-                        }
-                        else{
-                            match b.take(){
+                            r = self.right.pop();
+                            q -= 1;
+                        } else {
+                            match b.take() {
                                 Some(value) => {
                                     self.left.push(value);
-                                },
+                                }
                                 None => {
                                     break;
                                 }
@@ -182,18 +183,17 @@ impl<T> DoublyLinkedList<T> {
                             b = buffer.pop();
                         }
                     }
-                    if(r!=None){
-                        r.take().map(|value|{self.right.push(value);});
+                    if (r != None) {
+                        r.take().map(|value| { self.right.push(value); });
                     }
                 }
-
             }
             // self.print_all();
-            exp = exp<<1;
+            exp = exp << 1;
         }
     }
-    pub fn reverse(&mut self){
-        mem::swap(&mut self.left,&mut self.right);
+    pub fn reverse(&mut self) {
+        mem::swap(&mut self.left, &mut self.right);
     }
     pub fn print_line(&mut self)
         where T: std::fmt::Debug
@@ -206,17 +206,16 @@ impl<T> DoublyLinkedList<T> {
         println!();
     }
 
-    pub fn print_fmt(&mut self, separator : char)
+    pub fn print_fmt(&mut self, separator: char)
         where T: std::fmt::Debug
     {
         self.check_empty();
         let sz = self.size();
         for x in 0..sz {
-            print!("{:?}{}", self.get(x),separator);
+            print!("{:?}{}", self.get(x), separator);
         }
-        if(separator!='\n') {
+        if (separator != '\n') {
             println!();
         }
     }
-
 }

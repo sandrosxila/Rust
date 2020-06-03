@@ -1,36 +1,38 @@
 use std::fmt::Debug;
+
 mod doubly_linked_list;
+
 use doubly_linked_list::DoublyLinkedList;
 
-#[derive(Debug,PartialEq, PartialOrd)]
+#[derive(Debug, PartialEq, PartialOrd)]
 pub struct Person {
     name: String,
     age: u8,
-    height : f32
+    height: f32,
 }
-fn main() {
 
+fn main() {
     let mut dl: DoublyLinkedList<Person> = DoublyLinkedList::new();
     dl.push_back(Person {
-        name : String::from("John"),
-        age : 15,
-        height: 1.7
+        name: String::from("John"),
+        age: 15,
+        height: 1.7,
     });
     dl.push_back(Person {
-        name : String::from("John"),
-        age : 25,
-        height: 2.0
+        name: String::from("John"),
+        age: 25,
+        height: 2.0,
     });
     dl.push_back(Person {
-        name : String::from("John"),
-        age : 18,
-        height: 2.0
+        name: String::from("John"),
+        age: 18,
+        height: 2.0,
     });
-    dl.push(Person{
+    dl.push(Person {
         name: String::from("Emily"),
         age: 12,
-        height: 1.25
-    },1);
+        height: 1.25,
+    }, 1);
     println!("Initial order:");
     dl.print_line();
     dl.reverse();

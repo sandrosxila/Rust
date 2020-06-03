@@ -93,7 +93,7 @@ trait Iterator {
     fn next(&mut self) -> Option<Self::Item>;
 }
 
-pub trait Drop{
+pub trait Drop {
     fn drop(&mut self);
 }
 
@@ -128,10 +128,10 @@ impl<'a, T> Iterator for IterMut<'a, T> {
     }
 }
 
-impl <T> Drop for List<T>{
-    fn drop(&mut self){
+impl<T> Drop for List<T> {
+    fn drop(&mut self) {
         let mut current = self.head.take();
-        while  let Some(mut boxed_node) = current {
+        while let Some(mut boxed_node) = current {
             current = boxed_node.next.take();
         }
     }
