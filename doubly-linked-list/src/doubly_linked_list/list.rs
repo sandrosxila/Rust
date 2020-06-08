@@ -4,13 +4,13 @@ use std::cmp;
 use std::fmt::Debug;
 
 // Structures
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, PartialOrd)]
 pub struct List<T> {
     head: Option<Box<Node<T>>>,
     size: i32,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, PartialOrd)]
 pub struct Node<T> {
     elem: T,
     next: Option<Box<Node<T>>>,

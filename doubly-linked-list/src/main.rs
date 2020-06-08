@@ -33,10 +33,9 @@ fn main() {
         name: String::from("Emily"),
         age: 12,
         height: 1.25,
-    }, 1);
+    }, 3);
 
     println!("The first element: {:?}",dl.get(0));
-
     println!("Initial order:");
     dl.print_line();
     dl.reverse();
@@ -47,25 +46,11 @@ fn main() {
     dl.sort();
     println!("Sorted order:");
     dl.print_fmt('\n');
+    dl.pop_back();
+    println!("after popping back:");
+    dl.print_fmt('\n');
+    println!("{}",dl.size());
     dl.drop();
-    // dl.push_back(5);
-    // dl.push_back(3);
-    // dl.push_back(6);
-    // dl.push_back(7);
-    // dl.push_back(4);
-    // dl.push_back(2);
-    // dl.push_back(1);
-    // dl.push_back(1123);
-    // dl.push_back(231);
-    // dl.push_back(1234);
-    // dl.push_back(441);
-    // dl.push_back(651);
-    // dl.push_back(731);
-    // dl.push_back(14);
-    // dl.push_back(51);
-    // dl.push_back(771);
-    // dl.push_back(8881);
-    // dl.push_back(31);
 }
 
 

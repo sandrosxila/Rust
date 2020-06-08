@@ -11,7 +11,7 @@ use list::List;
 use crate::doubly_linked_list::list::Drop as list_drop;
 
 // Doubly Linked List
-#[derive(Debug)]
+#[derive(Debug, PartialEq, PartialOrd)]
 pub struct DoublyLinkedList<T> {
     left: List<T>,
     right: List<T>,
@@ -29,8 +29,29 @@ impl<T> DoublyLinkedList<T> {
         }
     }
 
+    pub fn get_size(&self) -> Option<&i32> {
+        Some(&self.size)
+    }
+
+    pub fn size(&self) -> i32 {
+        *self.get_size().unwrap()
+    }
+
+    pub fn get_current(&mut self) -> Option<&T> {
+        self.left.get_top()
+    }
+
+    pub fn get_current_position(&mut self) -> i32 {
+        self.left.get_size() - 1
+    }
+
+    fn empty(&self) -> bool {
+        let res: bool = self.size() == 0;
+        res
+    }
+
     fn check_empty(&mut self) {
-        if (self.size() == 0) {
+        if (self.empty()) {
             panic!("Doubly-Linked-List is Empty!!!");
         }
     }
@@ -63,8 +84,8 @@ impl<T> DoublyLinkedList<T> {
     }
 
     pub fn shift(&mut self, index: i32) {
-        while (self.left.get_size() != index + 1) {
-            if (index + 1 > self.left.get_size()) {
+        while (self.get_current_position() != index) {
+            if (index > self.get_current_position()) {
                 self.next();
             } else {
                 self.previous();
@@ -73,14 +94,19 @@ impl<T> DoublyLinkedList<T> {
     }
 
     pub fn push(&mut self, elem: T, index: i32) {
-        self.check_size(index);
-        self.shift(index - 1);
-        self.left.push(elem);
+        if (index == self.size()) {
+            self.shift(index - 1);
+            self.right.push(elem);
+        } else {
+            self.check_size(index);
+            self.shift(index - 1);
+            self.left.push(elem);
+        }
         self.size += 1;
     }
 
     pub fn pop_back(&mut self) {
-        self.shift(*self.get_size().unwrap() - 1);
+        self.shift(self.size() - 1);
         self.left.pop();
         self.size = cmp::max(0, self.size - 1);
     }
@@ -90,18 +116,6 @@ impl<T> DoublyLinkedList<T> {
         self.shift(index);
         self.left.pop();
         self.size = cmp::max(0, self.size - 1);
-    }
-
-    pub fn get_size(&self) -> Option<&i32> {
-        Some(&self.size)
-    }
-
-    pub fn get_current(&mut self) -> Option<&T> {
-        self.left.get_top()
-    }
-
-    pub fn get_current_position(&mut self) -> i32 {
-        self.left.get_size()
     }
 
     pub fn get(&mut self, index: i32) -> &T {
@@ -122,14 +136,10 @@ impl<T> DoublyLinkedList<T> {
         self.left.push(value);
     }
 
-    pub fn size(&mut self) -> i32 {
-        *self.get_size().unwrap()
-    }
-
     pub fn sort(&mut self)
         where T: std::cmp::PartialEq + std::cmp::PartialOrd + std::fmt::Debug
     {
-        if (self.size() == 0) {
+        if (self.empty()) {
             return;
         }
         self.shift(0);
