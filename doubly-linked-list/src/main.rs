@@ -3,6 +3,7 @@ use std::fmt::Debug;
 mod doubly_linked_list;
 
 use doubly_linked_list::DoublyLinkedList;
+use crate::doubly_linked_list::Drop;
 
 #[derive(Debug, PartialEq, PartialOrd)]
 pub struct Person {
@@ -33,6 +34,9 @@ fn main() {
         age: 12,
         height: 1.25,
     }, 1);
+
+    println!("The first element: {:?}",dl.get(0));
+
     println!("Initial order:");
     dl.print_line();
     dl.reverse();
@@ -43,7 +47,7 @@ fn main() {
     dl.sort();
     println!("Sorted order:");
     dl.print_fmt('\n');
-
+    dl.drop();
     // dl.push_back(5);
     // dl.push_back(3);
     // dl.push_back(6);

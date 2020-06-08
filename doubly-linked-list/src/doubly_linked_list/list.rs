@@ -4,20 +4,19 @@ use std::cmp;
 use std::fmt::Debug;
 
 // Structures
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct List<T> {
     head: Option<Box<Node<T>>>,
     size: i32,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Node<T> {
     elem: T,
     next: Option<Box<Node<T>>>,
 }
 
 // Iterator Structures
-pub struct IntoIter<T> (List<T>);
 
 pub struct Iter<'a, T> {
     next: Option<&'a Node<T>>,
@@ -35,7 +34,6 @@ impl<T> List<T> {
             size: 0,
         }
     }
-
     pub fn push(&mut self, elem: T) {
         self.head = Some(Box::new(Node { elem: elem, next: self.head.take() }));
         self.size += 1;
@@ -70,13 +68,10 @@ impl<T> List<T> {
     }
 
     // Iterator Methods
-    pub fn into_iter(self) -> IntoIter<T> {
-        IntoIter(self)
-    }
 
     pub fn iter(&self) -> Iter<T> {
         Iter {
-            next: self.head.as_ref().map(|node| { &**node }),
+            next: self.head.as_ref().map(|node: &Box<Node<T>>| { &**node }),
         }
     }
 
@@ -98,13 +93,6 @@ pub trait Drop {
 }
 
 // Traits Implementation
-impl<T> Iterator for IntoIter<T> {
-    type Item = T;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        self.0.pop()
-    }
-}
 
 impl<'a, T> Iterator for Iter<'a, T> {
     type Item = &'a T;
@@ -130,9 +118,70 @@ impl<'a, T> Iterator for IterMut<'a, T> {
 
 impl<T> Drop for List<T> {
     fn drop(&mut self) {
-        let mut current = self.head.take();
+        let mut current: Option<Box<Node<T>>> = self.head.take();
         while let Some(mut boxed_node) = current {
             current = boxed_node.next.take();
         }
     }
 }
+
+#[test]
+fn create_new() {
+    let list: List<i32> = List::new();
+    assert_eq!(list, List {
+        head: None,
+        size: 0,
+    } as List<i32>);
+}
+
+#[test]
+fn push_and_pop() {
+    let mut list: List<i32> = List::new();
+    list.push(1);
+    list.push(2);
+    list.push(3);
+    assert_eq!(list.pop(), Some(3));
+    assert_eq!(list.pop(), Some(2));
+    assert_eq!(list.pop(), Some(1));
+    assert_eq!(list.pop(), None);
+}
+
+#[test]
+fn getters() {
+    let mut list: List<i32> = List::new();
+    list.push(33);
+    list.push(22);
+    list.push(11);
+
+    assert_eq!(list.get_size(), 3);
+    assert_eq!(list.get_top(), Some(&11));
+}
+
+#[test]
+fn list_iter() {
+    let mut list: List<i32> = List::new();
+    list.push(33);
+    list.push(22);
+    list.push(11);
+    let mut it: Iter<i32> = list.iter();
+    assert_eq!(it.next(), Some(&11));
+    assert_eq!(it.next(), Some(&22));
+    assert_eq!(it.next(), Some(&33));
+    //Iterator has no influence to the list
+    assert_eq!(list.get_top(), Some(&11));
+}
+
+#[test]
+fn list_iter_mut() {
+    let mut list: List<i32> = List::new();
+    list.push(33);
+    list.push(22);
+    list.push(11);
+    let mut it: IterMut<i32> = list.iter_mut();
+    assert_eq!(it.next(), Some(&mut 11));
+    assert_eq!(it.next(), Some(&mut 22));
+    assert_eq!(it.next(), Some(&mut 33));
+    //Iterator has no influence to the list
+    assert_eq!(list.get_top(), Some(&11));
+}
+
