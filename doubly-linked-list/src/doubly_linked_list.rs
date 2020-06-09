@@ -137,7 +137,7 @@ impl<T> DoublyLinkedList<T> {
     }
 
     pub fn sort(&mut self)
-        where T: std::cmp::PartialEq + std::cmp::PartialOrd + std::fmt::Debug
+        where T: std::cmp::PartialEq + std::cmp::PartialOrd
     {
         if (self.empty()) {
             return;
@@ -152,56 +152,57 @@ impl<T> DoublyLinkedList<T> {
             for idx in init..size {
                 self.shift(idx);
                 if ((idx - init) % exp == 0) {
-                    let mut l = self.left.pop();
-                    let mut r = self.right.pop();
-                    let mut q = (exp >> 1);
-                    while (l >= r && q > 0) {
-                        match l.take() {
-                            Some(value) => {
-                                buffer.push(value);
-                            }
-                            None => {
-                                break;
-                            }
-                        }
-                        l = self.left.pop();
-                        q -= 1;
-                    }
-                    if (l != None) {
-                        l.take().map(|value| { self.left.push(value); });
-                    }
-                    let mut b = buffer.pop();
-                    q = (exp >> 1);
-                    while (b != None) {
-                        if (q > 0 && r != None && r < b) {
-                            match r.take() {
+                    {
+                        let mut left_element = self.left.pop();
+                        let mut right_element = self.right.pop();
+                        let mut half_segment_length = (exp >> 1);
+                        while (right_element != None && left_element >= right_element && half_segment_length > 0) {
+                            match left_element.take() {
                                 Some(value) => {
-                                    self.left.push(value);
+                                    buffer.push(value);
                                 }
                                 None => {
                                     break;
                                 }
                             }
-                            r = self.right.pop();
-                            q -= 1;
-                        } else {
-                            match b.take() {
-                                Some(value) => {
-                                    self.left.push(value);
-                                }
-                                None => {
-                                    break;
-                                }
-                            }
-                            b = buffer.pop();
+                            left_element = self.left.pop();
+                            half_segment_length -= 1;
                         }
-                    }
-                    if (r != None) {
-                        r.take().map(|value| { self.right.push(value); });
+                        if (left_element != None) {
+                            left_element.take().map(|value| { self.left.push(value); });
+                        }
+                        let mut buffer_element = buffer.pop();
+                        half_segment_length = (exp >> 1);
+                        while (buffer_element != None) {
+                            if (half_segment_length > 0 && right_element != None && right_element < buffer_element) {
+                                match right_element.take() {
+                                    Some(value) => {
+                                        self.left.push(value);
+                                    }
+                                    None => {
+                                        break;
+                                    }
+                                }
+                                right_element = self.right.pop();
+                                half_segment_length -= 1;
+                            } else {
+                                match buffer_element.take() {
+                                    Some(value) => {
+                                        self.left.push(value);
+                                    }
+                                    None => {
+                                        break;
+                                    }
+                                }
+                                buffer_element = buffer.pop();
+                            }
+                        }
+                        if (right_element != None) {
+                            right_element.take().map(|value| { self.right.push(value); });
+                        }
                     }
                 }
             }
-            // self.print_all();
             exp = exp << 1;
         }
     }
