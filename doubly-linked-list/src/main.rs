@@ -34,23 +34,30 @@ fn main() {
         age: 12,
         height: 1.25,
     }, 3);
-
+    //test 1
     println!("The first element: {:?}",dl.get(0));
+    //test 2
     println!("Initial order:");
     dl.print_line();
+    //test 3
     dl.reverse();
     println!("Reversed order:");
     dl.print_line();
-    dl.sort();
-    dl.reverse();
+    //test 4
     dl.sort();
     println!("Sorted order:");
     dl.print_fmt('\n');
+    //test 5
     dl.pop_back();
     println!("after popping back:");
     dl.print_fmt('\n');
-    println!("{}",dl.size());
+    //test 6
+    dl.pop(1);
+    println!("after popping 1st:");
+    dl.print_fmt('\n');
+    //test 7
     dl.drop();
+    println!("{}",dl.size());
 }
 
 
